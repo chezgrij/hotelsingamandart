@@ -44,24 +44,25 @@ class _CheckInOutScreenState extends State<CheckInOutScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(32.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Check-In / Check-Out', style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           Expanded(
             child: Card(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text('Reservas Activas', style: Theme.of(context).textTheme.titleLarge),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     Expanded(
                       child: SingleChildScrollView(
                         child: DataTable(
+                          headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF14213D)),
                           columns: const [
                             DataColumn(label: Text('ID Reserva')),
                             DataColumn(label: Text('Huésped')),
@@ -81,21 +82,42 @@ class _CheckInOutScreenState extends State<CheckInOutScreen> {
                               DataCell(Text(resId.toString())),
                               DataCell(Text(r['guest_name'])),
                               DataCell(Text('Hab ${r['room_number']}')),
-                              DataCell(Text(roomStatus)),
+                              DataCell(
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: roomStatus == 'Ocupada' ? Colors.orange.withValues(alpha: 0.1) : Colors.green.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    roomStatus,
+                                    style: TextStyle(
+                                      color: roomStatus == 'Ocupada' ? Colors.orange.shade800 : Colors.green.shade800,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
                               DataCell(Text('${r['check_in_date']} a ${r['check_out_date']}')),
                               DataCell(
                                 Row(
                                   children: [
-                                    ElevatedButton(
+                                    OutlinedButton(
                                       onPressed: isCheckInDisabled ? null : () => _handleCheckIn(resId, roomId),
-                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                                      child: const Text('Check-In', style: TextStyle(color: Colors.white)),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.green.shade700,
+                                        side: BorderSide(color: isCheckInDisabled ? Colors.grey.shade300 : Colors.green.shade700),
+                                      ),
+                                      child: const Text('Check-In'),
                                     ),
                                     const SizedBox(width: 8),
-                                    ElevatedButton(
+                                    OutlinedButton(
                                       onPressed: !isCheckInDisabled ? null : () => _handleCheckOut(resId, roomId),
-                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                      child: const Text('Check-Out', style: TextStyle(color: Colors.white)),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.red.shade700,
+                                        side: BorderSide(color: !isCheckInDisabled ? Colors.grey.shade300 : Colors.red.shade700),
+                                      ),
+                                      child: const Text('Check-Out'),
                                     ),
                                   ],
                                 ),

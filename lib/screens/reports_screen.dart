@@ -32,76 +32,35 @@ class _ReportsScreenState extends State<ReportsScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(32.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Reportes y Registro Histórico', style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           Row(
             children: [
-              Expanded(
-                child: Card(
-                  color: Colors.blue.withOpacity(0.1),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        const Text('Total Histórico', style: TextStyle(fontSize: 16)),
-                        const SizedBox(height: 8),
-                        Text('${_allReservations.length}', style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.blue)),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Card(
-                  color: Colors.green.withOpacity(0.1),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        const Text('Reservas Completadas', style: TextStyle(fontSize: 16)),
-                        const SizedBox(height: 8),
-                        Text('$_completed', style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.green)),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Card(
-                  color: Colors.orange.withOpacity(0.1),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        const Text('Reservas Activas', style: TextStyle(fontSize: 16)),
-                        const SizedBox(height: 8),
-                        Text('$_active', style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.orange)),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              _buildStatCard('Total Histórico', '${_allReservations.length}', const Color(0xFF1E88E5)),
+              const SizedBox(width: 24),
+              _buildStatCard('Reservas Completadas', '$_completed', const Color(0xFF43A047)),
+              const SizedBox(width: 24),
+              _buildStatCard('Reservas Activas', '$_active', const Color(0xFFFCA311)),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 32),
           Expanded(
             child: Card(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text('Historial de Reservas', style: Theme.of(context).textTheme.titleLarge),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
                     Expanded(
                       child: SingleChildScrollView(
                         child: DataTable(
+                          headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF14213D)),
                           columns: const [
                             DataColumn(label: Text('ID')),
                             DataColumn(label: Text('Huésped')),
@@ -114,13 +73,22 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             DataCell(Text(r.guestName ?? '')),
                             DataCell(Text('Hab ${r.roomNumber}')),
                             DataCell(Text('${r.checkInDate} a ${r.checkOutDate}')),
-                            DataCell(Text(
-                              r.status,
-                              style: TextStyle(
-                                color: r.status == 'Activa' ? Colors.orange : (r.status == 'Finalizada' ? Colors.green : Colors.red),
-                                fontWeight: FontWeight.bold,
+                            DataCell(
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: _getStatusColor(r.status).withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  r.status,
+                                  style: TextStyle(
+                                    color: _getStatusColor(r.status),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            )),
+                            ),
                           ])).toList(),
                         ),
                       ),
@@ -131,6 +99,36 @@ class _ReportsScreenState extends State<ReportsScreen> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Color _getStatusColor(String status) {
+    if (status == 'Activa') return Colors.orange.shade800;
+    if (status == 'Finalizada') return Colors.green.shade800;
+    return Colors.red.shade800;
+  }
+
+  Widget _buildStatCard(String title, String value, Color color) {
+    return Expanded(
+      child: Card(
+        color: color.withValues(alpha: 0.05),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: color.withValues(alpha: 0.2)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: TextStyle(fontSize: 16, color: color, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 16),
+              Text(value, style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: color)),
+            ],
+          ),
+        ),
       ),
     );
   }

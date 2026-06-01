@@ -57,113 +57,121 @@ class _GuestsScreenState extends State<GuestsScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Row(
+      padding: const EdgeInsets.all(32.0),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Formulario
+          Text('Gestión de Huéspedes', style: Theme.of(context).textTheme.headlineMedium),
+          const SizedBox(height: 32),
           Expanded(
-            flex: 1,
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Registrar Huésped', style: Theme.of(context).textTheme.titleLarge),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _nameCtrl,
-                        decoration: const InputDecoration(labelText: 'Nombre Completo', border: OutlineInputBorder()),
-                        validator: (v) => v!.isEmpty ? 'Requerido' : null,
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _docCtrl,
-                        decoration: const InputDecoration(labelText: 'Documento (ID)', border: OutlineInputBorder()),
-                        validator: (v) => v!.isEmpty ? 'Requerido' : null,
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _phoneCtrl,
-                        decoration: const InputDecoration(labelText: 'Teléfono', border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _emailCtrl,
-                        decoration: const InputDecoration(labelText: 'Correo Electrónico', border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(height: 24),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: _submit,
-                          icon: const Icon(Icons.save),
-                          label: const Text('Guardar'),
-                          style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Formulario
+                Expanded(
+                  flex: 1,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Registrar Huésped', style: Theme.of(context).textTheme.titleLarge),
+                            const SizedBox(height: 24),
+                            TextFormField(
+                              controller: _nameCtrl,
+                              decoration: const InputDecoration(labelText: 'Nombre Completo'),
+                              validator: (v) => v!.isEmpty ? 'Requerido' : null,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _docCtrl,
+                              decoration: const InputDecoration(labelText: 'Documento (ID)'),
+                              validator: (v) => v!.isEmpty ? 'Requerido' : null,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _phoneCtrl,
+                              decoration: const InputDecoration(labelText: 'Teléfono'),
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              controller: _emailCtrl,
+                              decoration: const InputDecoration(labelText: 'Correo Electrónico'),
+                            ),
+                            const SizedBox(height: 32),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: _submit,
+                                child: const Text('Registrar Huésped'),
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 24),
-          // Lista
-          Expanded(
-            flex: 2,
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Lista de Huéspedes', style: Theme.of(context).textTheme.titleLarge),
-                        SizedBox(
-                          width: 250,
-                          child: TextField(
-                            controller: _searchCtrl,
-                            decoration: const InputDecoration(
-                              labelText: 'Buscar...',
-                              prefixIcon: Icon(Icons.search),
-                              border: OutlineInputBorder(),
-                            ),
-                            onChanged: _loadGuests,
+                const SizedBox(width: 32),
+                // Lista
+                Expanded(
+                  flex: 2,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Directorio de Huéspedes', style: Theme.of(context).textTheme.titleLarge),
+                              SizedBox(
+                                width: 300,
+                                child: TextField(
+                                  controller: _searchCtrl,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Buscar por nombre o documento...',
+                                    prefixIcon: Icon(Icons.search),
+                                  ),
+                                  onChanged: _loadGuests,
+                                ),
+                              )
+                            ],
                           ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: DataTable(
-                          columns: const [
-                            DataColumn(label: Text('ID')),
-                            DataColumn(label: Text('Nombre')),
-                            DataColumn(label: Text('Documento')),
-                            DataColumn(label: Text('Teléfono')),
-                            DataColumn(label: Text('Email')),
-                          ],
-                          rows: _guests.map((g) => DataRow(cells: [
-                            DataCell(Text(g.id.toString())),
-                            DataCell(Text(g.name)),
-                            DataCell(Text(g.document)),
-                            DataCell(Text(g.phone ?? '')),
-                            DataCell(Text(g.email ?? '')),
-                          ])).toList(),
-                        ),
+                          const SizedBox(height: 24),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: DataTable(
+                                  headingTextStyle: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF14213D)),
+                                  columns: const [
+                                    DataColumn(label: Text('Nombre')),
+                                    DataColumn(label: Text('Documento')),
+                                    DataColumn(label: Text('Teléfono')),
+                                    DataColumn(label: Text('Email')),
+                                  ],
+                                  rows: _guests.map((g) => DataRow(cells: [
+                                    DataCell(Text(g.name)),
+                                    DataCell(Text(g.document)),
+                                    DataCell(Text(g.phone ?? '')),
+                                    DataCell(Text(g.email ?? '')),
+                                  ])).toList(),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                ),
-              ),
+                    ),
+                  ),
+                )
+              ],
             ),
           )
         ],
